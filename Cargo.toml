@@ -1,0 +1,8 @@
+[workspace]
+members = [
+    "hw_01_helloworld",
+    "hw_02_simaple_save_query",
+    "hw_03_simple_auction",
+    "hw_03_anchor_auction",
+    "hw_04_simple_token"
+]

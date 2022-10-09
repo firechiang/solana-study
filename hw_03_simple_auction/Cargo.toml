@@ -1,0 +1,24 @@
+[package]
+name = "hw_03_simple_auction"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+no-entrypoint = []
+
+[dependencies]
+arrayref = "0.3.6"
+num-derive = "0.3"
+num-traits = "0.2"
+num_enum = "0.5.1"
+solana-program = "1.6.4"
+thiserror = "1.0"
+maplit = "1.0.2"
+spl-token = {version = "3.1", features = ["no-entrypoint"]}
+
+[dev-dependencies]
+solana-sdk = "1.6.4"
+
+[lib]
+name = "hw_03_simple_auction"
+crate-type = ["cdylib", "lib"]
