@@ -1,0 +1,38 @@
+[package]
+name = "hw_05_token-swap"
+version = "3.0.0"
+description = "Solana Program Library Token Swap"
+repository = "https://github.com/solana-labs/solana-program-library"
+license = "Apache-2.0"
+edition = "2021"
+
+[features]
+no-entrypoint = []
+production = []
+fuzz = ["arbitrary", "roots"]
+
+[dependencies]
+arrayref = "0.3.6"
+enum_dispatch = "0.3.7"
+num-derive = "0.3.3"
+num-traits = "0.2.15"
+solana-program = "1.10.35"
+spl-math = {version="0.1.0",features = [ "no-entrypoint" ] }
+spl-token = {version="3.5.0",features = [ "no-entrypoint" ]}
+spl-token-2022 = {version="0.4.2", features = [ "no-entrypoint" ] }
+thiserror = "1.0.31"
+arbitrary = { version = "1.0", features = ["derive"], optional = true }
+roots = { version = "0.0.7", optional = true }
+
+[dev-dependencies]
+proptest = "1.0.0"
+roots = "0.0.7"
+solana-sdk = "1.10.35"
+test-case = "2.2"
+
+[lib]
+name = "hw_05_token_swap"
+crate-type = ["cdylib", "lib"]
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]

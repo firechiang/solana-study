@@ -4,5 +4,6 @@ members = [
     "hw_02_simaple_save_query",
     "hw_03_simple_auction",
     "hw_03_anchor_auction",
-    "hw_04_simple_token"
+    "hw_04_simple_token",
+    "hw_05_token-swap"
 ]
