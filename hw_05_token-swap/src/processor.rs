@@ -268,7 +268,7 @@ impl Processor {
      * 注意：
      * 1,手续账户的所有者要等于Swap常量配置中的所有者否则会抛出异常
      * 2,交易对持有账户必须是两个币以及手续费和目的地账户的所有者
-     * 注意：交易对所有者应该是在前端用 findProgramAddress([swap_info.publicKey],program_id)函数生成的，而这个地址是没有私钥的，它只能在对应的program_id程序里面进行签名
+     * 注意：交易对所有者应该是在前端用 findProgramAddress([swap_info.publicKey],program_id)函数生成的，而这个地址是没有私钥的，它只能在对应的program_id程序里面进行签名，再调用其它合约
      * 注意：这个地址的生成账户（也就是swap_info）在调用对应的program_id程序时，程序应该验证其网络中的签名，否则会存在漏洞
      * 3,有续费币种必须是池代币币种
      * 4,交易对持有账户必须可以铸造池代币
@@ -285,7 +285,7 @@ impl Processor {
         // 取迭代器里面的第1个账户为交易对信息
         let swap_info = next_account_info(account_info_iter)?;
         // 取迭代器里面的第2个账户为交易对所有者（注意：该账户要是两个币以及手续费以及目的地账户的所有者）
-        // 注意：这个账户应该是在前端用 findProgramAddress([swap_info.publicKey],program_id)函数生成的，而这个地址是没有私钥的，它只能在对应的program_id程序里面进行签名
+        // 注意：这个账户应该是在前端用 findProgramAddress([swap_info.publicKey],program_id)函数生成的，而这个地址是没有私钥的，它只能在对应的program_id程序里面进行签名，再调用其它合约
         // 注意：这个地址的生成账户（也就是swap_info）在调用对应的program_id程序时，程序应该验证其网络中的签名，否则会存在漏洞
         let authority_info = next_account_info(account_info_iter)?;
         // 取迭代器里面的第3个账户为持有Token A的信息（后面会解码出来Account对象数据，就是持有来多少个代币A的数据）
