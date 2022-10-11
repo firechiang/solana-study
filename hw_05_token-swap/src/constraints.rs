@@ -42,6 +42,7 @@ impl<'a> SwapConstraints<'a> {
     }
 
     /// Checks that the provided curve is valid for the given constraints
+    /// 验证费用配置
     pub fn validate_fees(&self, fees: &Fees) -> Result<(), ProgramError> {
         if fees.trade_fee_numerator >= self.fees.trade_fee_numerator
             && fees.trade_fee_denominator == self.fees.trade_fee_denominator

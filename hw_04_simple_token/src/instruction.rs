@@ -870,6 +870,7 @@ impl AuthorityType {
 }
 
 /// Creates a `InitializeMint` instruction.
+/// 生成可以在其他合约里面可以调用Token合约里面initialize_mint函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 pub fn initialize_mint(
     token_program_id: &Pubkey,
     mint_pubkey: &Pubkey,
@@ -899,6 +900,7 @@ pub fn initialize_mint(
 }
 
 /// Creates a `InitializeMint2` instruction.
+/// 生成可以在其他合约里面可以调用Token合约里面initialize_mint2函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 pub fn initialize_mint2(
     token_program_id: &Pubkey,
     mint_pubkey: &Pubkey,
@@ -925,6 +927,7 @@ pub fn initialize_mint2(
 }
 
 /// Creates a `InitializeAccount` instruction.
+/// 生成可以在其他合约里面可以调用Token合约里面initialize_account函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 pub fn initialize_account(
     token_program_id: &Pubkey,
     account_pubkey: &Pubkey,
@@ -949,6 +952,7 @@ pub fn initialize_account(
 }
 
 /// Creates a `InitializeAccount2` instruction.
+/// 生成可以在其他合约里面可以调用Token合约里面initialize_account2函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 pub fn initialize_account2(
     token_program_id: &Pubkey,
     account_pubkey: &Pubkey,
@@ -975,6 +979,7 @@ pub fn initialize_account2(
 }
 
 /// Creates a `InitializeAccount3` instruction.
+/// 生成可以在其他合约里面可以调用Token合约里面initialize_account3函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 pub fn initialize_account3(
     token_program_id: &Pubkey,
     account_pubkey: &Pubkey,
@@ -1000,6 +1005,7 @@ pub fn initialize_account3(
 }
 
 /// Creates a `InitializeMultisig` instruction.
+/// 生成可以在其他合约里面可以调用Token合约里面initialize_multisig函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 pub fn initialize_multisig(
     token_program_id: &Pubkey,
     multisig_pubkey: &Pubkey,
@@ -1030,6 +1036,7 @@ pub fn initialize_multisig(
 }
 
 /// Creates a `InitializeMultisig2` instruction.
+/// 生成可以在其他合约里面可以调用Token合约里面initialize_multisig2函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 pub fn initialize_multisig2(
     token_program_id: &Pubkey,
     multisig_pubkey: &Pubkey,
@@ -1059,6 +1066,7 @@ pub fn initialize_multisig2(
 }
 
 /// Creates a `Transfer` instruction.
+/// 生成可以在其他合约里面可以调用Token合约里面transfer函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 pub fn transfer(
     token_program_id: &Pubkey,
     source_pubkey: &Pubkey,
@@ -1089,6 +1097,7 @@ pub fn transfer(
 }
 
 /// Creates an `Approve` instruction.
+/// 生成可以在其他合约里面可以调用Token合约里面approve函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 pub fn approve(
     token_program_id: &Pubkey,
     source_pubkey: &Pubkey,
@@ -1118,6 +1127,7 @@ pub fn approve(
     })
 }
 
+/// 生成可以在其他合约里面可以调用Token合约里面revoke函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 /// Creates a `Revoke` instruction.
 pub fn revoke(
     token_program_id: &Pubkey,
@@ -1146,6 +1156,7 @@ pub fn revoke(
 }
 
 /// Creates a `SetAuthority` instruction.
+/// 生成可以在其他合约里面可以调用Token合约里面set_authority函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 pub fn set_authority(
     token_program_id: &Pubkey,
     owned_pubkey: &Pubkey,
@@ -1180,6 +1191,7 @@ pub fn set_authority(
 }
 
 /// Creates a `MintTo` instruction.
+/// 生成可以在其他合约里面可以调用Token合约里面mint_to函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 pub fn mint_to(
     token_program_id: &Pubkey,
     mint_pubkey: &Pubkey,
@@ -1210,6 +1222,7 @@ pub fn mint_to(
 }
 
 /// Creates a `Burn` instruction.
+/// 生成可以在其他合约里面可以调用Token合约里面burn函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 pub fn burn(
     token_program_id: &Pubkey,
     account_pubkey: &Pubkey,
@@ -1240,6 +1253,7 @@ pub fn burn(
 }
 
 /// Creates a `CloseAccount` instruction.
+/// 生成可以在其他合约里面可以调用Token合约里面close_account函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 pub fn close_account(
     token_program_id: &Pubkey,
     account_pubkey: &Pubkey,
@@ -1269,6 +1283,7 @@ pub fn close_account(
 }
 
 /// Creates a `FreezeAccount` instruction.
+/// 生成可以在其他合约里面可以调用Token合约里面freeze_account函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 pub fn freeze_account(
     token_program_id: &Pubkey,
     account_pubkey: &Pubkey,
@@ -1298,6 +1313,7 @@ pub fn freeze_account(
 }
 
 /// Creates a `ThawAccount` instruction.
+/// 生成可以在其他合约里面可以调用Token合约里面thaw_account函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 pub fn thaw_account(
     token_program_id: &Pubkey,
     account_pubkey: &Pubkey,
@@ -1327,6 +1343,7 @@ pub fn thaw_account(
 }
 
 /// Creates a `TransferChecked` instruction.
+/// 生成可以在其他合约里面可以调用Token合约里面transfer_checked函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 #[allow(clippy::too_many_arguments)]
 pub fn transfer_checked(
     token_program_id: &Pubkey,
@@ -1361,6 +1378,7 @@ pub fn transfer_checked(
 }
 
 /// Creates an `ApproveChecked` instruction.
+/// 生成可以在其他合约里面可以调用Token合约里面approve_checked函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 #[allow(clippy::too_many_arguments)]
 pub fn approve_checked(
     token_program_id: &Pubkey,
@@ -1395,6 +1413,7 @@ pub fn approve_checked(
 }
 
 /// Creates a `MintToChecked` instruction.
+/// 生成可以在其他合约里面可以调用Token合约里面mint_to_checked函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 pub fn mint_to_checked(
     token_program_id: &Pubkey,
     mint_pubkey: &Pubkey,
@@ -1426,6 +1445,7 @@ pub fn mint_to_checked(
 }
 
 /// Creates a `BurnChecked` instruction.
+/// 生成可以在其他合约里面可以调用Token合约里面burn_checked函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 pub fn burn_checked(
     token_program_id: &Pubkey,
     account_pubkey: &Pubkey,
@@ -1457,6 +1477,7 @@ pub fn burn_checked(
 }
 
 /// Creates a `SyncNative` instruction
+/// 生成可以在其他合约里面可以调用Token合约里面sync_native函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 pub fn sync_native(
     token_program_id: &Pubkey,
     account_pubkey: &Pubkey,
@@ -1471,6 +1492,7 @@ pub fn sync_native(
 }
 
 /// Creates a `GetAccountDataSize` instruction
+/// 生成可以在其他合约里面可以调用Token合约里面get_account_data_size函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 pub fn get_account_data_size(
     token_program_id: &Pubkey,
     mint_pubkey: &Pubkey,
@@ -1485,6 +1507,7 @@ pub fn get_account_data_size(
 }
 
 /// Creates a `InitializeImmutableOwner` instruction
+/// 生成可以在其他合约里面可以调用Token合约里面initialize_immutable_owner函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 pub fn initialize_immutable_owner(
     token_program_id: &Pubkey,
     account_pubkey: &Pubkey,
@@ -1498,6 +1521,7 @@ pub fn initialize_immutable_owner(
 }
 
 /// Creates an `AmountToUiAmount` instruction
+/// 生成可以在其他合约里面可以调用Token合约里面amount_to_ui_amount函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 pub fn amount_to_ui_amount(
     token_program_id: &Pubkey,
     mint_pubkey: &Pubkey,
@@ -1513,6 +1537,7 @@ pub fn amount_to_ui_amount(
 }
 
 /// Creates a `UiAmountToAmount` instruction
+/// 生成可以在其他合约里面可以调用Token合约里面ui_amount_to_amount函数的Instruction（注意：该函数是供其他合约调用的 同时 该生成函数也可以写在其他合约里面）
 pub fn ui_amount_to_amount(
     token_program_id: &Pubkey,
     mint_pubkey: &Pubkey,

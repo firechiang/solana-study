@@ -99,43 +99,53 @@ impl SwapVersion {
 }
 
 /// Program states.
+/// 交易对相关信息结构体数据
 #[repr(C)]
 #[derive(Debug, Default, PartialEq)]
 pub struct SwapV1 {
     /// Initialized state.
+    /// 交易对是否已经初始化
     pub is_initialized: bool,
     /// Bump seed used in program address.
     /// The program address is created deterministically with the bump seed,
     /// swap program id, and swap account pubkey.  This program address has
     /// authority over the swap's token A account, token B account, and pool
     /// token mint.
+    /// 交易对信息账户的种子（如果在合约里面要调用另一个合约可以使用该种子签名）
     pub bump_seed: u8,
 
     /// Program ID of the tokens being exchanged.
+    /// Token合约地址
     pub token_program_id: Pubkey,
 
-    /// Token A
+    /// Token A 账户地址
     pub token_a: Pubkey,
-    /// Token B
+    /// Token B账户地址
     pub token_b: Pubkey,
 
     /// Pool tokens are issued when A or B tokens are deposited.
     /// Pool tokens can be withdrawn back to the original A or B token.
+    /// 池代币币种信息地址
     pub pool_mint: Pubkey,
 
     /// Mint information for token A
+    /// Token A币种信息地址
     pub token_a_mint: Pubkey,
     /// Mint information for token B
+    /// Token B币种信息地址
     pub token_b_mint: Pubkey,
 
     /// Pool token account to receive trading and / or withdrawal fees
+    /// 交易和取款手续费存放账户地址（注意：该币种需和池代币币种相同）
     pub pool_fee_account: Pubkey,
 
     /// All fee information
+    /// 费用相关配置
     pub fees: Fees,
 
     /// Swap curve parameters, to be unpacked and used by the SwapCurve, which
     /// calculates swaps, deposits, and withdrawals
+    /// 代币兑换价格计算实现
     pub swap_curve: SwapCurve,
 }
 

@@ -17,13 +17,16 @@ use std::mem::size_of;
 use arbitrary::Arbitrary;
 
 /// Initialize instruction data
+/// 创建交易对
 #[repr(C)]
 #[derive(Debug, PartialEq)]
 pub struct Initialize {
     /// all swap fees
+    /// 手续费信息
     pub fees: Fees,
     /// swap curve info for pool, including CurveType and anything
     /// else that may be required
+    /// 兑换价格计算
     pub swap_curve: SwapCurve,
 }
 

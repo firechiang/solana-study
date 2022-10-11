@@ -84,9 +84,11 @@ pub trait DynPack {
 }
 
 /// Trait representing operations required on a swap curve
+/// 兑换接口
 pub trait CurveCalculator: Debug + DynPack {
     /// Calculate how much destination token will be provided given an amount
     /// of source token.
+    /// 计算给定金额将提供多少目的地令牌
     fn swap_without_fees(
         &self,
         source_amount: u128,
@@ -97,12 +99,14 @@ pub trait CurveCalculator: Debug + DynPack {
 
     /// Get the supply for a new pool
     /// The default implementation is a Balancer-style fixed initial supply
+    /// 获取新池的供应量
     fn new_pool_supply(&self) -> u128 {
         INITIAL_SWAP_POOL_AMOUNT
     }
 
     /// Get the amount of trading tokens for the given amount of pool tokens,
     /// provided the total trading tokens and supply of pool tokens.
+    /// 计算给定金额在池内可交易代币金额，
     fn pool_tokens_to_trading_tokens(
         &self,
         pool_tokens: u128,
@@ -121,6 +125,7 @@ pub trait CurveCalculator: Debug + DynPack {
     /// See more background for the calculation at:
     ///
     /// <https://balancer.finance/whitepaper/#single-asset-deposit-withdrawal>
+    /// 获取令牌A或B的存款金额的池令牌金额
     fn deposit_single_token_type(
         &self,
         source_amount: u128,
@@ -140,6 +145,7 @@ pub trait CurveCalculator: Debug + DynPack {
     /// See more background for the calculation at:
     ///
     /// <https://balancer.finance/whitepaper/#single-asset-deposit-withdrawal>
+    /// 获取代币A或B提取金额的池代币金额
     fn withdraw_single_token_type_exact_out(
         &self,
         source_amount: u128,
@@ -150,11 +156,13 @@ pub trait CurveCalculator: Debug + DynPack {
     ) -> Option<u128>;
 
     /// Validate that the given curve has no invalid parameters
+    /// 验证给定曲线没有无效参数
     fn validate(&self) -> Result<(), SwapError>;
 
     /// Validate the given supply on initialization. This is useful for curves
     /// that allow zero supply on one or both sides, since the standard constant
     /// product curve must have a non-zero supply on both sides.
+    /// 交易对初始化时验证给定的总量
     fn validate_supply(&self, token_a_amount: u64, token_b_amount: u64) -> Result<(), SwapError> {
         if token_a_amount == 0 {
             return Err(SwapError::EmptySupply);
@@ -184,6 +192,7 @@ pub trait CurveCalculator: Debug + DynPack {
     /// This is useful for testing the curves, to make sure that value is not
     /// lost on any trade.  It can also be used to find out the relative value
     /// of pool tokens or liquidity tokens.
+    /// 计算给定流动性的曲线的总标准化值
     fn normalized_value(
         &self,
         swap_token_a_amount: u128,

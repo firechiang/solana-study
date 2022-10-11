@@ -21,6 +21,7 @@ use std::sync::Arc;
 use arbitrary::Arbitrary;
 
 /// Curve types supported by the token-swap program.
+/// 兑换价格类型
 #[cfg_attr(feature = "fuzz", derive(Arbitrary))]
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -28,8 +29,10 @@ pub enum CurveType {
     /// Uniswap-style constant product curve, invariant = token_a_amount * token_b_amount
     ConstantProduct,
     /// Flat line, always providing 1:1 from one token to another
+    /// 一比一兑换
     ConstantPrice,
     /// Offset curve, like Uniswap, but the token B side has a faked offset
+    /// 自动做市和 Uniswap 类似
     Offset,
 }
 
@@ -56,9 +59,11 @@ pub struct SwapResult {
 pub struct SwapCurve {
     /// The type of curve contained in the calculator, helpful for outside
     /// queries
+    /// 兑换价格计算类型
     pub curve_type: CurveType,
     /// The actual calculator, represented as a trait object to allow for many
     /// different types of curves
+    /// 兑换价格计算实现
     pub calculator: Arc<dyn CurveCalculator + Sync + Send>,
 }
 

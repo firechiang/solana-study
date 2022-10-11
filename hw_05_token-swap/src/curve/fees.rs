@@ -9,6 +9,7 @@ use solana_program::{
 use std::convert::TryFrom;
 
 /// Encapsulates all fee information and calculations for swap operations
+/// 费用信息
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct Fees {
     /// Trade fees are extra token amounts that are held inside the token
