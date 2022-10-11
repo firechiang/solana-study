@@ -115,6 +115,9 @@ class Content extends React.Component {
       console.log("playerAccount:", this.playerAccount.publicKey.toBase58());
       console.log("message:", this.messageAccount.publicKey.toBase58());
 
+      const pkey3 = await PublicKey.findProgramAddress([this.playerAccount.publicKey.toBuffer()],this.programID)
+      console.log("pkey3:",pkey3.toString())
+
       // 创建调用智能合约参数也就是生成 input数据
       let trxi = HelloWorld.createHelloInstruction(
           this.playerAccount.publicKey,

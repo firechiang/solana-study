@@ -268,6 +268,8 @@ impl Processor {
      * 注意：
      * 1,手续账户的所有者要等于Swap常量配置中的所有者否则会抛出异常
      * 2,交易对持有账户必须是两个币以及手续费和目的地账户的所有者
+     * 注意：交易对所有者应该是在前端用 findProgramAddress([swap_info.publicKey],program_id)函数生成的，而这个地址是没有私钥的，它只能在对应的program_id程序里面进行签名
+     * 注意：这个地址的生成账户（也就是swap_info）在调用对应的program_id程序时，程序应该验证其网络中的签名，否则会存在漏洞
      * 3,有续费币种必须是池代币币种
      * 4,交易对持有账户必须可以铸造池代币
      * 5,池代币币种必须是一个新的且还没有生成过代币的币种（就是总量还是0的币种）
@@ -283,6 +285,8 @@ impl Processor {
         // 取迭代器里面的第1个账户为交易对信息
         let swap_info = next_account_info(account_info_iter)?;
         // 取迭代器里面的第2个账户为交易对所有者（注意：该账户要是两个币以及手续费以及目的地账户的所有者）
+        // 注意：这个账户应该是在前端用 findProgramAddress([swap_info.publicKey],program_id)函数生成的，而这个地址是没有私钥的，它只能在对应的program_id程序里面进行签名
+        // 注意：这个地址的生成账户（也就是swap_info）在调用对应的program_id程序时，程序应该验证其网络中的签名，否则会存在漏洞
         let authority_info = next_account_info(account_info_iter)?;
         // 取迭代器里面的第3个账户为持有Token A的信息（后面会解码出来Account对象数据，就是持有来多少个代币A的数据）
         let token_a_info = next_account_info(account_info_iter)?;
@@ -303,9 +307,9 @@ impl Processor {
         if SwapVersion::is_initialized(&swap_info.data.borrow()) {
             return Err(SwapError::AlreadyInUse.into());
         }
-        // 根据账户查询其对应程序上的创建者
+        // 使用类似于前端的findProgramAddress([swap_info.publicKey],program_id)函数生成地址和种子
         let (swap_authority, bump_seed) = Pubkey::find_program_address(&[&swap_info.key.to_bytes()], program_id);
-        // 如果查询到的创建者和传过来的持有者不一致直接抛出异常
+        // 验证生成的地址和传过来的所有者地址是不是一致，不一致的话抛出异常
         if *authority_info.key != swap_authority {
             return Err(SwapError::InvalidProgramAddress.into());
         }
