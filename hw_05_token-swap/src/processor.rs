@@ -92,13 +92,13 @@ impl Processor {
     }
 
     /// Calculates the authority id by generating a program address.
+    /// 通过生成程序地址计算授权id
     pub fn authority_id(
         program_id: &Pubkey,
         my_info: &Pubkey,
         bump_seed: u8,
     ) -> Result<Pubkey, SwapError> {
-        Pubkey::create_program_address(&[&my_info.to_bytes()[..32], &[bump_seed]], program_id)
-            .or(Err(SwapError::InvalidProgramAddress))
+        Pubkey::create_program_address(&[&my_info.to_bytes()[..32], &[bump_seed]], program_id).or(Err(SwapError::InvalidProgramAddress))
     }
 
     /// Issue a spl_token `Burn` instruction.
@@ -288,9 +288,9 @@ impl Processor {
         // 注意：这个账户应该是在前端用 findProgramAddress([swap_info.publicKey],program_id)函数生成的，而这个地址是没有私钥的，它只能在对应的program_id程序里面进行签名，再调用其它合约
         // 注意：这个地址的生成账户（也就是swap_info）在调用对应的program_id程序时，程序应该验证其网络中的签名，否则会存在漏洞
         let authority_info = next_account_info(account_info_iter)?;
-        // 取迭代器里面的第3个账户为持有Token A的信息（后面会解码出来Account对象数据，就是持有来多少个代币A的数据）
+        // 取迭代器里面的第3个账户为交易对代币A流动性账户（后面会解码出来Account对象数据，就是持有来多少个代币A的数据）
         let token_a_info = next_account_info(account_info_iter)?;
-        // 取迭代器里面的第4个账户为持有Token B的信息（后面会解码出来Account对象数据，就是持有来多少个代币B的数据）
+        // 取迭代器里面的第4个账户为交易对代币B流动性账户（后面会解码出来Account对象数据，就是持有来多少个代币B的数据）
         let token_b_info = next_account_info(account_info_iter)?;
         // 取迭代器里面的第5个账户为池代币币种信息（注意：手续费账户的币种必须是这个）
         let pool_mint_info = next_account_info(account_info_iter)?;
@@ -313,9 +313,9 @@ impl Processor {
         if *authority_info.key != swap_authority {
             return Err(SwapError::InvalidProgramAddress.into());
         }
-        // 解码Token A的持有信息（注意：这个函数里面实际是解码账户对应在合约上存储的实际数据）
+        // 解码交易对代币A流动性账户信息（注意：这个函数里面实际是解码账户对应在合约上存储的实际数据）
         let token_a = Self::unpack_token_account(token_a_info, &token_program_id)?;
-        // 解码Token B的持有信息（注意：这个函数里面实际是解码账户对应在合约上存储的实际数据）
+        // 解码交易对代币B流动性账户信息（注意：这个函数里面实际是解码账户对应在合约上存储的实际数据）
         let token_b = Self::unpack_token_account(token_b_info, &token_program_id)?;
         // 解码手续费币种的持有信息（注意：这个函数里面实际是解码账户对应在合约上存储的实际数据）
         let fee_account = Self::unpack_token_account(fee_account_info, &token_program_id)?;
@@ -335,11 +335,11 @@ impl Processor {
             }
             pool_mint.base
         };
-        // 判断交易对的所有者是不是Token A 账户的所有者，如果不是抛出异常
+        // 判断交易对的所有者是不是交易对代币A流动性账户的所有者，如果不是抛出异常
         if *authority_info.key != token_a.owner {
             return Err(SwapError::InvalidOwner.into());
         }
-        // 判断交易对的所有者是不是Token B 账户的所有者，如果不是抛出异常
+        // 判断交易对的所有者是不是交易对代币B流动性账户的所有者，如果不是抛出异常
         if *authority_info.key != token_b.owner {
             return Err(SwapError::InvalidOwner.into());
         }
@@ -355,7 +355,7 @@ impl Processor {
         if COption::Some(*authority_info.key) != pool_mint.mint_authority {
             return Err(SwapError::InvalidOwner.into());
         }
-        // 如果Token A 和 Token B不是同一种代币否则抛出异常
+        // 如果Token A 和 Token B是同一种代币抛出异常
         if token_a.mint == token_b.mint {
             return Err(SwapError::RepeatedMint.into());
         }
@@ -365,15 +365,15 @@ impl Processor {
         if token_a.delegate.is_some() {
             return Err(SwapError::InvalidDelegate.into());
         }
-        // 如果Token B账户有授权地址抛出异常
+        // 如果交易对代币B流动性账户有授权地址抛出异常
         if token_b.delegate.is_some() {
             return Err(SwapError::InvalidDelegate.into());
         }
-        // 如果Token A 账户有可以关闭该账户的地址则抛出异常
+        // 如果交易对代币A流动性账户有可以关闭该账户的地址则抛出异常
         if token_a.close_authority.is_some() {
             return Err(SwapError::InvalidCloseAuthority.into());
         }
-        // 如果Token B 账户有可以关闭该账户的地址则抛出异常
+        // 如果交易对代币B流动性账户有可以关闭该账户的地址则抛出异常
         if token_b.close_authority.is_some() {
             return Err(SwapError::InvalidCloseAuthority.into());
         }
@@ -427,9 +427,9 @@ impl Processor {
             bump_seed,
             // Token合约地址
             token_program_id,
-            // Token A 账户地址
+            // 交易对代币A流动性账户
             token_a: *token_a_info.key,
-            // Token B账户地址
+            // 交易对代币B流动性账户
             token_b: *token_b_info.key,
             // 池代币币种信息地址
             pool_mint: *pool_mint_info.key,
@@ -452,6 +452,8 @@ impl Processor {
     /// Processes an [Swap](enum.Instruction.html).
     /**
      * 兑换
+     * @amount_in          转入金额
+     * @minimum_amount_out 最少兑换到数量（如果实际兑换数量小于该数量直接抛出异常）
      */
     pub fn process_swap(
         program_id: &Pubkey,
@@ -460,75 +462,97 @@ impl Processor {
         accounts: &[AccountInfo],
     ) -> ProgramResult {
         let account_info_iter = &mut accounts.iter();
+        // 取迭代器里面的第1个为交易对信息账户
         let swap_info = next_account_info(account_info_iter)?;
+        // 取迭代器里面的第2个为交易对所有者账户
         let authority_info = next_account_info(account_info_iter)?;
+        // 取迭代器里面的第3个为转出地址所有者账户
         let user_transfer_authority_info = next_account_info(account_info_iter)?;
+        // 取迭代器里面的第4个为个人转出账户
         let source_info = next_account_info(account_info_iter)?;
+        // 取迭代器里面的第5个为交易对代币A流动性账户
         let swap_source_info = next_account_info(account_info_iter)?;
+        // 取迭代器里面的第6个为交易对代币B流动性账户
         let swap_destination_info = next_account_info(account_info_iter)?;
+        // 取迭代器里面的第7个为个人转入账户
         let destination_info = next_account_info(account_info_iter)?;
+        // 取迭代器里面的第8个为交易对池代币信息账户
         let pool_mint_info = next_account_info(account_info_iter)?;
+        // 取迭代器里面的第9个为交易手续费收取账户
         let pool_fee_account_info = next_account_info(account_info_iter)?;
+        // 取迭代器里面的第10个为源币种信息账户
         let source_token_mint_info = next_account_info(account_info_iter)?;
+        // 取迭代器里面的第11个为目标币种信息账户
         let destination_token_mint_info = next_account_info(account_info_iter)?;
+        // 取迭代器里面的第12个为源币种程序信息
         let source_token_program_info = next_account_info(account_info_iter)?;
+        // 取迭代器里面的第13个为目标币种程序信息
         let destination_token_program_info = next_account_info(account_info_iter)?;
+        // 取迭代器里面的第14个为代币程序地址
         let pool_token_program_info = next_account_info(account_info_iter)?;
 
+        // 交易对信息账户如果不属于当前程序直接抛出异常
         if swap_info.owner != program_id {
             return Err(ProgramError::IncorrectProgramId);
         }
+        // 解码交易对信息账户
         let token_swap = SwapVersion::unpack(&swap_info.data.borrow())?;
-
-        if *authority_info.key
-            != Self::authority_id(program_id, swap_info.key, token_swap.bump_seed())?
-        {
+        // 通过交易对信息账户的key和已经存储的交易对信息账户的种子来反向计算交易对信息账户的所有者；如果和传过的所有者不一致抛出异常
+        if *authority_info.key != Self::authority_id(program_id, swap_info.key, token_swap.bump_seed())? {
             return Err(SwapError::InvalidProgramAddress.into());
         }
-        if !(*swap_source_info.key == *token_swap.token_a_account()
-            || *swap_source_info.key == *token_swap.token_b_account())
-        {
+        // 如果传过来的交易对流动性账户A 不属于 交易对信息账户里面的流动性账户A或B 抛出异常
+        if !(*swap_source_info.key == *token_swap.token_a_account() || *swap_source_info.key == *token_swap.token_b_account()) {
             return Err(SwapError::IncorrectSwapAccount.into());
         }
-        if !(*swap_destination_info.key == *token_swap.token_a_account()
-            || *swap_destination_info.key == *token_swap.token_b_account())
-        {
+        // 如果传过来的交易对流动性账户B 不属于 交易对信息账户里面的流动性账户A或B 抛出异常
+        if !(*swap_destination_info.key == *token_swap.token_a_account() || *swap_destination_info.key == *token_swap.token_b_account()) {
             return Err(SwapError::IncorrectSwapAccount.into());
         }
+        // 如果传过来的交易对流动性账户A和B相等，说明是同币种兑换，直接抛出异常
         if *swap_source_info.key == *swap_destination_info.key {
             return Err(SwapError::InvalidInput.into());
         }
+        // 如果传过来的交易对流动性账户A 等于 个人转出账户 抛出异常
         if swap_source_info.key == source_info.key {
             return Err(SwapError::InvalidInput.into());
         }
+        // 如果传过来的交易对流动性账户B 等于 转入账户 抛出异常
         if swap_destination_info.key == destination_info.key {
             return Err(SwapError::InvalidInput.into());
         }
+        // 如果传过来的池代币账户 不等于 交易对信息里面的池代币账户 抛出异常
         if *pool_mint_info.key != *token_swap.pool_mint() {
             return Err(SwapError::IncorrectPoolMint.into());
         }
+        // 如果传过来的手续费收取账户 不等于 交易对信息里面手续费收取账户 抛出异常
         if *pool_fee_account_info.key != *token_swap.pool_fee_account() {
             return Err(SwapError::IncorrectFeeAccount.into());
         }
+        // 如果传过来的代币程序地址 不等于 交易对信息里面的程序地址 抛出异常
         if *pool_token_program_info.key != *token_swap.token_program_id() {
             return Err(SwapError::IncorrectTokenProgramId.into());
         }
 
-        let source_account =
-            Self::unpack_token_account(swap_source_info, token_swap.token_program_id())?;
-        let dest_account =
-            Self::unpack_token_account(swap_destination_info, token_swap.token_program_id())?;
+        // 解码交易对代币A流动性账户
+        let source_account = Self::unpack_token_account(swap_source_info, token_swap.token_program_id())?;
+        // 解码交易对代币B流动性账户
+        let dest_account = Self::unpack_token_account(swap_destination_info, token_swap.token_program_id())?;
+        // 解码交易对池代币信息账户
         let pool_mint = Self::unpack_mint(pool_mint_info, token_swap.token_program_id())?;
 
         // Take transfer fees into account for actual amount transferred in
+        // 计算实际源币种转出数量考虑转入费
         let actual_amount_in = {
+            // 源币种信息账户数据
             let source_mint_data = source_token_mint_info.data.borrow();
+            // 解码源币种信息
             let source_mint = Self::unpack_mint_with_extensions(
                 &source_mint_data,
                 source_token_mint_info.owner,
                 token_swap.token_program_id(),
             )?;
-
+            // 如果源币种有转账配置 则 计算实际源币种可用数量
             if let Ok(transfer_fee_config) = source_mint.get_extension::<TransferFeeConfig>() {
                 amount_in.saturating_sub(
                     transfer_fee_config
@@ -541,11 +565,13 @@ impl Processor {
         };
 
         // Calculate the trade amounts
+        // 计算交易方向
         let trade_direction = if *swap_source_info.key == *token_swap.token_a_account() {
             TradeDirection::AtoB
         } else {
             TradeDirection::BtoA
         };
+        // 兑换并得到兑换结果
         let result = token_swap
             .swap_curve()
             .swap(
@@ -558,15 +584,19 @@ impl Processor {
             .ok_or(SwapError::ZeroTradingTokens)?;
 
         // Re-calculate the source amount swapped based on what the curve says
+        // 计算实际兑换源币种转出数量（可能池中没有钱实际可兑换的转出数量小于传入的转出数量）
         let (source_transfer_amount, source_mint_decimals) = {
+            // 实际兑换源币种转出数量（可能池中没有钱实际可兑换的转出数量小于传入的转出数量）
             let source_amount_swapped = to_u64(result.source_amount_swapped)?;
-
+            // 源币种信息账户数据
             let source_mint_data = source_token_mint_info.data.borrow();
+            // 解码源币种信息
             let source_mint = Self::unpack_mint_with_extensions(
                 &source_mint_data,
                 source_token_mint_info.owner,
                 token_swap.token_program_id(),
             )?;
+            // 如果源币种有转账配置 则 计算实际源币种可用数量
             let amount =
                 if let Ok(transfer_fee_config) = source_mint.get_extension::<TransferFeeConfig>() {
                     source_amount_swapped.saturating_add(
@@ -581,18 +611,20 @@ impl Processor {
                 };
             (amount, source_mint.base.decimals)
         };
-
+        // 计算实际兑换目标币种转入数量（就是实际可兑换到的目标数量）
         let (destination_transfer_amount, destination_mint_decimals) = {
+            // 目标币种信息账户数据
             let destination_mint_data = destination_token_mint_info.data.borrow();
+            // 解码目标币种信息
             let destination_mint = Self::unpack_mint_with_extensions(
                 &destination_mint_data,
                 source_token_mint_info.owner,
                 token_swap.token_program_id(),
             )?;
+            // 实际兑换目标币种转入数量（就是可兑换到的目标数量）
             let amount_out = to_u64(result.destination_amount_swapped)?;
-            let amount_received = if let Ok(transfer_fee_config) =
-                destination_mint.get_extension::<TransferFeeConfig>()
-            {
+            // 如果目标币种有转账配置 则 计算目标币种实际可接收数量
+            let amount_received = if let Ok(transfer_fee_config) = destination_mint.get_extension::<TransferFeeConfig>() {
                 amount_out.saturating_sub(
                     transfer_fee_config
                         .calculate_epoch_fee(Clock::get()?.epoch, amount_out)
@@ -601,12 +633,13 @@ impl Processor {
             } else {
                 amount_out
             };
+            // 如果实际兑换数量 小于 传入的最少兑换到数量 直接抛出异常
             if amount_received < minimum_amount_out {
                 return Err(SwapError::ExceededSlippage.into());
             }
             (amount_out, destination_mint.base.decimals)
         };
-
+        // 根据交易方向得到
         let (swap_token_a_amount, swap_token_b_amount) = match trade_direction {
             TradeDirection::AtoB => (
                 result.new_swap_source_amount,
@@ -618,48 +651,50 @@ impl Processor {
             ),
         };
 
+        // 将源币种转出数量 转到 交易对代币A流动性账户上
         Self::token_transfer(
+            // 交易对信息账户地址
             swap_info.key,
+            // 源币种程序信息
             source_token_program_info.clone(),
+            // 个人转出账户
             source_info.clone(),
+            // 源币种信息
             source_token_mint_info.clone(),
+            // 交易对代币A流动性账户
             swap_source_info.clone(),
+            // 个人转出地址所有者账户
             user_transfer_authority_info.clone(),
+            // 交易对信息账户的种子
             token_swap.bump_seed(),
+            // 实际兑换源币种转出数量
             source_transfer_amount,
+            // 源币种精度
             source_mint_decimals,
         )?;
-
-        let mut pool_token_amount = token_swap
-            .swap_curve()
-            .withdraw_single_token_type_exact_out(
+        /*************************** curve 算法逻辑，可不需要解读 Start ****************************************/
+        let mut pool_token_amount = token_swap.swap_curve().withdraw_single_token_type_exact_out(
                 result.owner_fee,
                 swap_token_a_amount,
                 swap_token_b_amount,
                 to_u128(pool_mint.supply)?,
                 trade_direction,
                 token_swap.fees(),
-            )
-            .ok_or(SwapError::FeeCalculationFailure)?;
+            ).ok_or(SwapError::FeeCalculationFailure)?;
 
         if pool_token_amount > 0 {
             // Allow error to fall through
             if let Ok(host_fee_account_info) = next_account_info(account_info_iter) {
-                let host_fee_account = Self::unpack_token_account(
-                    host_fee_account_info,
-                    token_swap.token_program_id(),
-                )?;
+
+                let host_fee_account = Self::unpack_token_account(host_fee_account_info, token_swap.token_program_id(), )?;
+
                 if *pool_mint_info.key != host_fee_account.mint {
                     return Err(SwapError::IncorrectPoolMint.into());
                 }
-                let host_fee = token_swap
-                    .fees()
-                    .host_fee(pool_token_amount)
-                    .ok_or(SwapError::FeeCalculationFailure)?;
+                let host_fee = token_swap.fees().host_fee(pool_token_amount).ok_or(SwapError::FeeCalculationFailure)?;
+
                 if host_fee > 0 {
-                    pool_token_amount = pool_token_amount
-                        .checked_sub(host_fee)
-                        .ok_or(SwapError::FeeCalculationFailure)?;
+                    pool_token_amount = pool_token_amount.checked_sub(host_fee).ok_or(SwapError::FeeCalculationFailure)?;
                     Self::token_mint_to(
                         swap_info.key,
                         pool_token_program_info.clone(),
@@ -671,10 +706,7 @@ impl Processor {
                     )?;
                 }
             }
-            if token_swap
-                .check_pool_fee_info(pool_fee_account_info)
-                .is_ok()
-            {
+            if token_swap.check_pool_fee_info(pool_fee_account_info).is_ok() {
                 Self::token_mint_to(
                     swap_info.key,
                     pool_token_program_info.clone(),
@@ -686,16 +718,27 @@ impl Processor {
                 )?;
             };
         }
+        /*************************** curve 算法逻辑，可不需要解读 End ****************************************/
 
+        // 从交易对代币B流动性账户将钱转到用户账户，至此交易完成
         Self::token_transfer(
+            // 交易对信息账户地址
             swap_info.key,
+            // 目标币种程序信息
             destination_token_program_info.clone(),
+            // 交易对代币B流动性账户
             swap_destination_info.clone(),
+            // 目标币种信息账户
             destination_token_mint_info.clone(),
+            // 个人转入账户（就是收款账户）
             destination_info.clone(),
+            // 交易对所有者账户
             authority_info.clone(),
+            // 交易对信息账户的种子
             token_swap.bump_seed(),
+            // 实际兑换目标币种转入数量
             destination_transfer_amount,
+            // 目标币种精度
             destination_mint_decimals,
         )?;
 

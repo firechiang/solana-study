@@ -37,6 +37,7 @@ pub enum CurveType {
 }
 
 /// Encodes all results of swapping from a source token to a destination token
+/// 兑换结果信息结构体
 #[derive(Debug, PartialEq)]
 pub struct SwapResult {
     /// New amount of source token
@@ -44,8 +45,10 @@ pub struct SwapResult {
     /// New amount of destination token
     pub new_swap_destination_amount: u128,
     /// Amount of source token swapped (includes fees)
+    /// 实际兑换源币种转出数量（可能池中没有钱实际可兑换的转出数量小于传入的转出数量）
     pub source_amount_swapped: u128,
     /// Amount of destination token swapped
+    /// 实际兑换目标币种转入数量（就是可兑换的目标数量）
     pub destination_amount_swapped: u128,
     /// Amount of source tokens going to pool holders
     pub trade_fee: u128,
