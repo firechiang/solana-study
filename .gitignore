@@ -13,3 +13,10 @@ test-ledger
 docker-target
 .idea
 .coderrect
+
+./hw_06_anchor_simple/.anchor/
+./hw_06_anchor_simple/node_modules/
+./hw_06_anchor_simple/target/
+./hw_06_anchor_simple/test-ledger/
+
+

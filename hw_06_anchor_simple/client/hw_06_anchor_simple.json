@@ -1,0 +1,158 @@
+{
+  "version": "0.1.0",
+  "name": "hw_06_anchor_simple",
+  "instructions": [
+    {
+      "name": "initialize",
+      "docs": [
+        "* 初始化一个水龙头（就是创建一个水龙头）\n     * @ctx 上下文（里面包含调用该函数所需要的所有AccountInfo账户）\n     * @none\n     * @drip_volume"
+      ],
+      "accounts": [
+        {
+          "name": "faucetConfig",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "nonce",
+          "type": "u8"
+        },
+        {
+          "name": "dripVolume",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "drip",
+      "docs": [
+        "* 空投\n     * @ctx 上下文（里面包含调用该函数所需要的所有AccountInfo账户）"
+      ],
+      "accounts": [
+        {
+          "name": "faucetConfig",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "receiver",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "setDripVolume",
+      "docs": [
+        "* 修改水龙头一次给多少币"
+      ],
+      "accounts": [
+        {
+          "name": "faucetConfig",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "dripVolume",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "FaucetConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "tokenProgram",
+            "type": "publicKey"
+          },
+          {
+            "name": "tokenMint",
+            "type": "publicKey"
+          },
+          {
+            "name": "tokenAuthority",
+            "type": "publicKey"
+          },
+          {
+            "name": "nonce",
+            "type": "u8"
+          },
+          {
+            "name": "dripVolume",
+            "type": "u64"
+          },
+          {
+            "name": "authority",
+            "type": "publicKey"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Forbidden",
+      "msg": "Authority error"
+    }
+  ]
+}

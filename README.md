@@ -7,6 +7,7 @@
 ##### 6，Solana上有些Rust SDK是不能用的比如 HashMap
 ##### 7，合约币转账如果接收方没有合约账户，发送方需要先帮接收方创建好合约账户再进行转账
 ##### 8，一个地址只能拥有一种代币，因为一个地址只能存储一条数据。但是多条数据的所有者可以指定为同一个地址，这样也就实现了一个地址拥有多个币种
+##### 9，CPI和PDA概念说明：一个智能合约调用另一个智能合约这个操作叫CPI，但是调用另一个合约需要签名，所以我们需要用调用当前合约的发起者和当前合约一起可以生成一个没有私钥的地址，而这个地址可以在合约里面签名去调用另一个合约。这一整个操作我们叫PDA
 
 #### 二、安装Solana客户端，[官方文档](https://docs.solana.com/getstarted/local)
 ```bash
@@ -83,6 +84,23 @@ $ avm use latest
 
 # 验证Anchor套件是否安装成功
 $ anchor --version
+
+# 如果前端要使用 Anchor的话需要安装一下插件
+$ npm install -g mocha
+$ npm install -g @project-serum/anchor
+```
+
+#### 六、Anchor框架简单使用
+```bash
+# 使用Anchor创建项目
+$ anchor init "项目名称"
+
+# 使用Anchor编译项目，编译完成以后在target/idl目录下会生成IDL json文件（类似于ABI）（注意：该命令需要在项目目录下执行）
+$ anchor build
+
+# 使用客户端JS代码测试链上程序（注意：这个测试代码是写在tests目录下的（具体可参考hw_06_anchor_simple项目））
+# --skip-local-validator 表示不自动启动本地Solana伪集群
+$ anchor test --skip-local-validator
 ```
 
 

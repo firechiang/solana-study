@@ -1,0 +1,31 @@
+{
+    "name": "hw_06_anchor_simple",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "test": "anchor test",
+        "build": "anchor build",
+        "predeploy:devnet": "npm run build",
+        "comment": "下面这个命令是部署到测试网络",
+        "deploy:devnet": "anchor deploy --provider.cluster https://api.devnet.solana.com",
+        "comment": "下面这个命令是程序部署好了以后可能需要一些链上数据初始化，执行该命令具体逻辑写在 migrate 目录下",
+        "migrate:devnet": "anchor migrate --provider.cluster https://api.devnet.solana.com"
+    },
+    "dependencies": {
+        "@project-serum/anchor": "^0.25.0",
+        "@project-serum/common": "^0.0.1-beta.3",
+        "@project-serum/serum": "^0.13.65",
+        "@solana/spl-token": "^0.3.5"
+    },
+    "devDependencies": {
+        "@types/bn.js": "^5.1.0",
+        "@types/chai": "^4.3.0",
+        "@types/mocha": "^9.0.0",
+        "assert": "^2.0.0",
+        "chai": "^4.3.4",
+        "mocha": "^9.0.3",
+        "prettier": "^2.6.2",
+        "ts-mocha": "^10.0.0",
+        "typescript": "^4.3.5"
+    }
+}
