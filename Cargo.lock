@@ -1481,10 +1481,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "hw_03_anchor_auction"
-version = "0.1.0"
-
-[[package]]
 name = "hw_03_simple_auction"
 version = "0.1.0"
 dependencies = [

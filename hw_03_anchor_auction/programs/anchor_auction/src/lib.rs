@@ -106,19 +106,19 @@ mod auction {
 #[derive(Accounts)]
 pub struct CreateAuction<'info> {
     #[account(init)]
-    auction: ProgramAccount<'info, Auction>,
+    auction: Account<'info, Auction>,
     seller: AccountInfo<'info>,
     #[account("&item_holder.owner == &Pubkey::find_program_address(&[&seller.key.to_bytes()], &program_id).0")]
-    item_holder: CpiAccount<'info, TokenAccount>,
+    item_holder: Account<'info, TokenAccount>,
     #[account("&currency_holder.owner == &Pubkey::find_program_address(&[&seller.key.to_bytes()], &program_id).0")]
-    currency_holder: CpiAccount<'info, TokenAccount>,
+    currency_holder: Account<'info, TokenAccount>,
     rent: Sysvar<'info, Rent>,
 }
 
 #[derive(Accounts)]
 pub struct Bid<'info> {
     #[account(mut, "auction.ongoing")]
-    auction: ProgramAccount<'info, Auction>,
+    auction: Account<'info, Auction>,
     #[account(signer)]
     bidder: AccountInfo<'info>,
     #[account(
@@ -126,14 +126,14 @@ pub struct Bid<'info> {
     "from.mint == currency_holder.mint",
     "&from.owner == from_auth.key"
     )]
-    from: CpiAccount<'info, TokenAccount>,
+    from: Account<'info, TokenAccount>,
     #[account(signer)]
     from_auth: AccountInfo<'info>,
     #[account(
     mut,
     "currency_holder.to_account_info().key == &auction.currency_holder"
     )]
-    currency_holder: CpiAccount<'info, TokenAccount>,
+    currency_holder: Account<'info, TokenAccount>,
     #[account("&currency_holder.owner == currency_holder_auth.key")]
     currency_holder_auth: AccountInfo<'info>,
     #[account(mut, "ori_refund_receiver.key == &Pubkey::default() || ori_refund_receiver.key == &auction.refund_receiver")]
@@ -145,7 +145,7 @@ pub struct Bid<'info> {
 #[derive(Accounts)]
 pub struct CloseAuction<'info> {
     #[account(mut, "auction.ongoing")]
-    auction: ProgramAccount<'info, Auction>,
+    auction: Account<'info, Auction>,
     #[account(signer)]
     seller: AccountInfo<'info>,
     #[account(
@@ -153,20 +153,20 @@ pub struct CloseAuction<'info> {
     "item_holder.to_account_info().key == &auction.item_holder"
     "&item_holder.owner == &Pubkey::find_program_address(&[&seller.key.to_bytes()], &program_id).0"
     )]
-    item_holder: CpiAccount<'info, TokenAccount>,
+    item_holder: Account<'info, TokenAccount>,
     item_holder_auth: AccountInfo<'info>,
     #[account(mut, "item_receiver.owner == auction.bidder")]
-    item_receiver: CpiAccount<'info, TokenAccount>,
+    item_receiver: Account<'info, TokenAccount>,
     #[account(
     mut,
     "currency_holder.to_account_info().key == &auction.currency_holder"
     "&currency_holder.owner == &Pubkey::find_program_address(&[&seller.key.to_bytes()], &program_id).0"
     )]
-    currency_holder: CpiAccount<'info, TokenAccount>,
+    currency_holder: Account<'info, TokenAccount>,
     #[account("&currency_holder.owner == currency_holder_auth.key")]
     currency_holder_auth: AccountInfo<'info>,
     #[account(mut)]
-    currency_receiver: CpiAccount<'info, TokenAccount>,
+    currency_receiver: Account<'info, TokenAccount>,
     #[account("token_program.key == &token::ID")]
     token_program: AccountInfo<'info>,
 }
