@@ -1,0 +1,12 @@
+html {
+    /* em单位相对于父元素的font-size */
+    /* rem相对于根元素html的font-size（r就是根的意思） */
+    /* 16 * 62.5% = 10px */
+    /* 1rem = 10px */
+    font-size: 62.5%;
+}
+
+/* viewport height = vh */
+html body #root .App {
+    min-height: 100vh;
+}

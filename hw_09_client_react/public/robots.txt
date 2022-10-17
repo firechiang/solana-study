@@ -1,0 +1,3 @@
+# https://www.robotstxt.org/robotstxt.html （这里面配置不允许搜索引擎访问的地址）
+User-agent: *
+Disallow:

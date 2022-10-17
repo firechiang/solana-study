@@ -3,30 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "main": "src/index.tsx",
-  "engines": {
-    "node": ">=16"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "files": [
-    "public",
-    "src",
-    "config-overrides.js",
-    "package.json",
-    "README.md",
-    "tsconfig.json"
-  ],
   "dependencies": {
     "@solana/web3.js": "^1.65.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
     "@types/node": "^18.11.0",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
     "@types/styled-components": "^5.1.26",
+    "eslint-config-prettier": "^8.5.0",
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
@@ -35,7 +26,8 @@
     "react-scripts": "5.0.1",
     "source-map-loader": "^4.0.1",
     "styled-components": "^5.3.6",
-    "typescript": "^4.8.4"
+    "typescript": "^4.8.4",
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-app-rewired start",
@@ -43,7 +35,14 @@
     "test": "react-app-rewired test --passWithNoTests --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "comment": "代码提交前使用lint-staged自动格式化代码",
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest",
+      "prettier"
+    ]
+  },
+  "comment": "代码提交前使用lint-staged配置的prettier插件自动格式化代码",
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
