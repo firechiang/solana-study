@@ -20,5 +20,6 @@ docker-target
 ./hw_06_anchor_simple/test-ledger/
 
 ./hw_08_phantom_example/node_modules/
+./hw_09_client_react/node_modules/
 
 
