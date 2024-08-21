@@ -1,8 +1,8 @@
 [workspace]
 members = [
     "hw_01_helloworld",
-    "hw_02_simaple_save_query",
-    "hw_03_simple_auction",
-    "hw_04_simple_token",
-    "hw_05_token-swap"
+    "hw_02_basic_example/solana_program",
+    "hw_03_simple_token",
+    "hw_04_token_swap"
 ]
+resolver = "2"

@@ -7,17 +7,28 @@
 ##### 6，Solana上有些Rust SDK是不能用的比如 HashMap
 ##### 7，合约币转账如果接收方没有合约账户，发送方需要先帮接收方创建好合约账户再进行转账
 ##### 8，一个地址只能拥有一种代币，因为一个地址只能存储一条数据。但是多条数据的所有者可以指定为同一个地址，这样也就实现了一个地址拥有多个币种
-##### 9，CPI和PDA概念说明：一个智能合约调用另一个智能合约这个操作叫CPI，但是调用另一个合约需要签名，所以我们需要用调用当前合约的发起者和当前合约一起可以生成一个没有私钥的地址，而这个地址可以在合约里面签名去调用另一个合约。这一整个操作我们叫PDA
+##### 9，一个智能合约调用另一个智能合约这个操作叫CPI
+##### 10，PDA地址是使用预定义种子（比如一串字符串），凹凸种子（从255到0），ProgramId（所属合约地址）生成的一个没有私钥的地址，在合约里面使用PDA地址调用另一个合约需要传PDA地址的种子签名([代码示例](./hw_02_basic_example/solana_program/src/tools/account.rs))
+##### 11，如果想使用PDA地址创建数据账户，只能在合约里面创建([示例代码](./hw_02_basic_example/solana_program/src/tools/account.rs))，不能在前端直接创建因为它没有私钥不能签名。
 
 #### 二、安装Solana客户端，[官方文档](https://docs.solana.com/getstarted/local)
 ```bash
 $ export http_proxy=http://127.0.0.1:58591/
 $ export https_proxy=http://127.0.0.1:58591/
-# 注意：执行这个脚本可能需要代理
+# 注意：执行这个脚本可能需要代理（默认安装路径：~/.local/share/solana/install/）
 $ sh -c "$(curl -sSfL https://release.solana.com/stable/install)"
 
-# 验证Solana客户端是否安装成功
+# 验证Solana客户端是否安装成功（注意：建议使用1.18.18及以上版本，如果非这个版本，建议使用命令 solana-install init 1.18.18 安装）
 $ solana --version
+
+# 更新Solana客户端（注意：这个命令可能需要代理）
+$ solana-install update
+
+# 安装或使用指定版本Solana客户端（注意：这个命令可能需要代理，建议使用1.18.18及以上的版本）
+$ solana-install init 1.18.18
+
+# 查看已安装的Solana客户端
+$ solana-install list
 ```
 
 #### 三、使用Solana客户端创建代币
@@ -45,8 +56,8 @@ $ spl-token supply 8kDYBqzYrKayd2fQ63BPd8ed1sk8hsUWQ2y6JcBUhHdT
 # 创建代币持有账户（因为Solana地址本身不能持有ERC20代币，只能创建代币持有账户持有代币，然后我拥有代币持有账户的所有权）
 # --fee-payer 指定交易签名地址密钥对文件
 # --owner     指定代币持有账户的所有者地址
-# 最后一个参数是代币地址
-$ spl-token create-account --fee-payer ~/.config/solana/id.json --owner CokWw92izG3TrnkZJK3RujGwnUKq1i29pzL4shpUpVaE 8kDYBqzYrKayd2fQ63BPd8ed1sk8hsUWQ2y6JcBUhHdT
+# 第一个参数是代币地址
+$ spl-token create-account 8kDYBqzYrKayd2fQ63BPd8ed1sk8hsUWQ2y6JcBUhHdT --fee-payer ~/.config/solana/id.json --owner CokWw92izG3TrnkZJK3RujGwnUKq1i29pzL4shpUpVaE
 # 代币持有账户地址
 Creating account 4GLLKhsTCkm7roqFiTEm5fg4LDrjBZmgyT94cJ6kAaTr
 # 交易签名也是交易Hash
@@ -66,24 +77,42 @@ $ spl-token transfer --fund-recipient --allow-unfunded-recipient 8kDYBqzYrKayd2f
 
 #### 四、打包智能合约代码
 ```bash
+# 打包下载依赖可能需要代理
+$ export http_proxy=http://127.0.0.1:58591/
+$ export https_proxy=http://127.0.0.1:58591/
+
 # 测试智能合约代码
-$ cargo test-bpf --manifest-path=./Cargo.toml
+# cargo test-sbf --manifest-path=./Cargo.toml (效果等同下面)
+$ cargo-test-sbf --manifest-path=./Cargo.toml
+
+# 查看编译打包工具版本以及相关依赖版本
+# 注意：下面显示的rustc版本是Solana客户端自带的Rust工具，可使用rustup show命令查看已安装的rust工具，里面的solana就是下面这个
+# rust工具默认安装在 ~/.rustup/toolchains 目录
+$ cargo-build-sbf --version
+solana-cargo-build-sbf 1.18.18
+platform-tools v1.41
+rustc 1.75.0
 
 # 打包Solana智能合约程序
 # --bpf-out-dir 指定打包后文件输出目录
-$ cargo build-bpf --manifest-path=./Cargo.toml --bpf-out-dir=dist/program
+# cargo build-sbf --manifest-path=./Cargo.toml --sbf-out-dir=build（效果等同下面）
+$ cargo-build-sbf --manifest-path=./Cargo.toml --sbf-out-dir=build
 
 # 清空Solana打包程序
-$ cargo clean --manifest-path=./Cargo.toml && rm -rf ./dist
+$ cargo clean --manifest-path=./Cargo.toml && rm -rf ./build
 ```
 
-#### 五、部署智能合约到本地集群
+#### 五、部署智能合约到本地验证节点
 ```bash
-# 启动本地Solana伪集群
+# 分模块指定Solana本地验证节点日志级别，如果想全局指定可使用命令 export RUST_LOG=ERROR（注意：不指定日志级别它默认打印info日志，打得太多太快）
+# 说明：solana_runtime::system_instruction_processor=info 可打印我们代码里面的日志，方便调试代码
+$ export RUST_LOG=solana_bpf_loader=error,solana_rbpf=error,solana_runtime::system_instruction_processor=info,solana_runtime::message_processor=error
+
+# 启动本地Solana验证节点
 $ solana-test-validator
 
 # 创建密钱包（就是部署智能合约的账户），钱包密钥对默认创建在 ~/.config/solana/id.json
-# 指定密钥对存储路径示例: solana-keygen new -o /home/chiangfire/data-data/dev-tools/Solana/test-key/id.json
+# 指定密钥对存储路径示例: solana-keygen new -o ~/data-data/dev-tools/Solana/test-key/id.json
 # 可指定参数 --no-outfile 表示不存储密钥对数据
 $ solana-keygen new
 
@@ -108,6 +137,8 @@ $ solana airdrop 100
 $ solana balance
 
 # 部署智能合约（注意：/home/helloworld.so 是已经打包好的合约程序）
+# --with-compute-unit-price 指定自定义Gas价格加快部署交易，可防止Blockhash expired（Blockhash过期部署错误））
+# solana program deploy --with-compute-unit-price 1000 /home/helloworld.so
 $ solana program deploy /home/helloworld.so
 # 部署成功后的合约地址
 Program Id: EjS5rkqgXAUWqhvUip9nWN9mmdRzKLxmsfoXnUggn7pM
@@ -144,10 +175,9 @@ $ anchor init "项目名称"
 $ anchor build
 
 # 使用客户端JS代码测试链上程序（注意：这个测试代码是写在tests目录下的（具体可参考hw_06_anchor_simple项目））
-# --skip-local-validator 表示不自动启动本地Solana伪集群
+# --skip-local-validator 表示不自动启动本地Solana验证节点
 $ anchor test --skip-local-validator
 ```
-
 
 
 

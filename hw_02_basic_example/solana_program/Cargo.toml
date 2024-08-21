@@ -1,20 +1,26 @@
 [package]
-name = "hw_01_helloworld"
+name = "solana_program"
 version = "0.1.0"
 edition = "2021"
 
 [features]
 no-entrypoint = []
+test-sbf = []
 
 [dependencies]
-borsh = "0.9.3"
-borsh-derive = "0.9.1"
+arrayref = "0.3.6"
+num-derive = "0.3"
+num-traits = "0.2"
+num_enum = "0.5.1"
 solana-program = "1.10.33"
+thiserror = "1.0"
 
 [dev-dependencies]
 solana-program-test = "1.10.33"
 solana-sdk = "1.10.33"
 
 [lib]
-name = "hw_01_helloworld"
+name = "solana_program"
 crate-type = ["cdylib", "lib"]
+# 禁用文档测试
+doctest = false

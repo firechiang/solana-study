@@ -13,12 +13,9 @@ docker-target
 .idea
 .coderrect
 
-./hw_06_anchor_simple/.anchor/
-./hw_06_anchor_simple/node_modules/
-./hw_06_anchor_simple/target/
-./hw_06_anchor_simple/test-ledger/
-
-./hw_08_phantom_example/node_modules/
-./hw_09_client_react/node_modules/
+hw_05_anchor_simple/.anchor/
+hw_05_anchor_simple/node_modules/
+hw_05_anchor_simple/target/
+hw_05_anchor_simple/test-ledger/
 
 
